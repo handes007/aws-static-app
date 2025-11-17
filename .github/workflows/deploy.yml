@@ -2,9 +2,9 @@ name: Deploy static file to s3 bucket
 
 on:
   push:
-    branches:  main 
+    branches: main 
   pull_request:
-    branches:  main
+    branches: main
 
 permissions:
   id-token: write   # Required for OIDC
@@ -17,20 +17,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install AWS CLI
-        uses: unfor19/install-aws-cli@v1
-        with:
-          version: 2
-          verbose: false    
-          arch: x86
-    
+      
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-1
-  
-
-      - name: upload files to s3 bucket
+      
+      - name: Verify AWS CLI
         run: |
-            aws s3 cp ./static-file.txt s3://project2.zeldes.online/ --recursive
+          aws --version
+          aws sts get-caller-identity
+      
+      - name: Deploy to S3
+        run: |
+          aws s3 sync . s3://project2.zeldes.online/ --recursive
