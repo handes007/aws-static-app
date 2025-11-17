@@ -31,4 +31,4 @@ jobs:
       
       - name: Deploy to S3
         run: |
-          aws s3 sync . s3://project2.zeldes.online/ --recursive
+          aws s3 sync . s3://project2.zeldes.online/ 
